@@ -2,6 +2,7 @@
 #include <nrf_sdm.h>
 #include <app_error.h>
 #include <ble_gap.h>
+#include <ble_advdata.h>
 #include <softdevice_handler.h>
 
 #include <string.h>
@@ -18,6 +19,8 @@
 #define CENTRAL_LINK_COUNT              0                                           /**< The number of central links used by the application. When changing this number remember to adjust the RAM settings. */
 #define PERIPHERAL_LINK_COUNT           1                                           /**< The number of peripheral links used by the application. When changing this number remember to adjust the RAM settings. */
 #define VENDOR_SPECIFIC_UUID_COUNT      1                                           /**< The number of vendor specific UUIDs used by this example. */
+
+static const uint8_t beacon_id[] = { 0x01, 0x00, 0x00, 0x00 };
 
 // clock settings
 #define NRF_CLOCK_LFCLKSRC  { \
@@ -118,6 +121,22 @@ static void gap_params_init(void)
 
 static void advertising_start(void)
 {
+    static const ble_advdata_manuf_data_t identity = {
+        .company_identifier = 0x0269, // Torrox GmbH & Co KG
+        .data = {
+            .p_data = (uint8_t*)beacon_id,
+            .size   = sizeof( beacon_id )
+        }
+    };
+
+    static const ble_advdata_t advertising_data = {
+        .name_type              = BLE_ADVDATA_FULL_NAME,
+        .flags                  = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED,
+        .p_manuf_specific_data  = (ble_advdata_manuf_data_t*)&identity
+    };
+
+    APP_ERROR_CHECK( ble_advdata_set( &advertising_data, NULL ) );
+
     static const ble_gap_adv_params_t params = {
         .interval = ADVERTING_INTERVAL
     };

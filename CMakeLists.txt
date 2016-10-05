@@ -85,6 +85,7 @@ function(new_executable TARGETNAME)
         ${NRF51_SDK_ROOT}/components/ble/ble_db_discovery/ble_db_discovery.c
         ${NRF51_SDK_ROOT}/components/libraries/util/app_error.c
         ${NRF51_SDK_ROOT}/components/softdevice/common/softdevice_handler/softdevice_handler.c
+        ${NRF51_SDK_ROOT}/components/ble/common/ble_advdata.c
     )
 
     set_target_properties(${TARGETNAME}.elf PROPERTIES
@@ -96,6 +97,10 @@ function(new_executable TARGETNAME)
     add_custom_target(${TARGETNAME}.hex
         arm-none-eabi-objcopy -S -O ihex ${TARGETNAME}.elf ${TARGETNAME}.hex
         )
+    add_custom_target(${TARGETNAME}_with_sd.hex
+        mergehex --merge ${NRF_SOFTDEVICE_HEX_FILE} ${TARGETNAME}.hex --output ${TARGETNAME}_with_sd.hex
+        )
+    add_dependencies(${TARGETNAME}_with_sd.hex ${TARGETNAME}.hex)
     add_dependencies(${TARGETNAME}.bin ${TARGETNAME}.elf)
     add_dependencies(${TARGETNAME}.hex ${TARGETNAME}.elf)
 
