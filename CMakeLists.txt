@@ -30,7 +30,7 @@ set(CXX_DISABLED_WARNINGS "${CXX_DISABLED_WARNINGS} -Wno-unused-local-typedefs")
 set(LINK_DEFAULT_FLAGS "${LINK_DEFAULT_FLAGS} -Wl,--gc-sections -L ${CMAKE_SOURCE_DIR}/examples -nostdlib")
 
 # debugging
-set(CXX_BUILD_TYPE_FLAGS "-g -O3")
+set(CXX_BUILD_TYPE_FLAGS "-g -O0")
 set(LINK_BUILD_TYPE_FLAGS "-g")
 
 # device
@@ -40,7 +40,6 @@ set(DEFAULT_JLINK_DEVICE_NAME nRF51422_xxAA)
 string(TOUPPER ${NRF_SOFTDEVICE} NRF_SOFTDEVICE_UPPER)
 set(NRF_SOFTDEVICE_HEX_FILE ${NRF51_SDK_ROOT}/components/softdevice/${NRF_SOFTDEVICE}/hex/${NRF_SOFTDEVICE}_nrf51_2.0.0_softdevice.hex)
 
-message(WARNING ${NRF_SOFTDEVICE_HEX_FILE})
 set(CMAKE_CXX_FLAGS "${CXX_DEFAULT_FLAGS} ${CXX_SPECIFIC_FLAGS} ${CXX_ARC_FLAGS} ${CXX_BUILD_TYPE_FLAGS} ${CXX_DISABLED_WARNINGS}")
 set(CMAKE_C_FLAGS   "${CXX_DEFAULT_FLAGS} ${CXX_ARC_FLAGS} ${CXX_BUILD_TYPE_FLAGS} ${CXX_DISABLED_WARNINGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${LINK_DEFAULT_FLAGS} ${LINK_ARC_FLAGS} ${LINK_BUILD_TYPE_FLAGS} -L ${CMAKE_SOURCE_DIR}")
@@ -65,6 +64,7 @@ include_directories(${NRF51_SDK_ROOT}/components/libraries/util)
 include_directories(${NRF51_SDK_ROOT}/components/libraries/trace)
 include_directories(${NRF51_SDK_ROOT}/components/ble/ble_db_discovery)
 include_directories(${NRF51_SDK_ROOT}/components/ble/common)
+include_directories(${NRF51_SDK_ROOT}/components/softdevice/common/softdevice_handler)
 
 if (DEFINED JLINK_DEVICE)
     message( WARNING "JLink ${JLINK_DEVICE} selected")
@@ -105,7 +105,7 @@ function(new_executable TARGETNAME)
             echo "${SELECT_JLINK_DEVICE}" > ${TARGETNAME}.jlink &&
             echo "halt" >> ${TARGETNAME}.jlink &&
             echo "exec device = ${DEFAULT_JLINK_DEVICE_NAME}" >> ${TARGETNAME}.jlink &&
-            echo "loadbin ${TARGETNAME}.bin, 0x1f000" >> ${TARGETNAME}.jlink &&
+            echo "loadbin ${TARGETNAME}.bin, 0x1b000" >> ${TARGETNAME}.jlink &&
             echo "r" >> ${TARGETNAME}.jlink &&
             echo "g" >> ${TARGETNAME}.jlink &&
             echo "q" >> ${TARGETNAME}.jlink)
