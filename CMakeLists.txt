@@ -3,6 +3,8 @@ project(approximation_alarm CXX ASM C)
 
 set(CXX_DEFAULT_FLAGS "-Wall")
 set(CXX_SPECIFIC_FLAGS "-std=c++11")
+set(C_DEFAULT_FLAGS "-Wall")
+set(C_SPECIFIC_FLAGS "-std=c99")
 
 set(CXX_DISABLED_WARNINGS "-Wno-parentheses")
 
@@ -76,7 +78,7 @@ endif()
 
 function(new_executable TARGETNAME)
     add_executable(${TARGETNAME}.elf
-        ${TARGETNAME}.cpp
+        ${TARGETNAME}.c
         runtime.cpp
         system_nrf51.c
         gcc_startup_nrf51.s
